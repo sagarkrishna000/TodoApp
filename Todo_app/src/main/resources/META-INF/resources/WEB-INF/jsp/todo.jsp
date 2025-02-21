@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+
 <html>
 	<head>
 	<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
@@ -6,10 +10,14 @@
 	<body>
 		<div class="container">
 			<h1>Add Todo</h1>
-			<form method="post">
-			Description: <input type ="text" name="description">
-			<input type="submit" class="btn btn-success">
-			</form>
+			<form:form method="post" modelAttribute="todo">
+    			Description: <form:input path="description" required="required" />
+    			
+    			<form:input type="hidden" path="id" />
+    			<form:input type="hidden" path="done" />
+    			<input type="submit" class="btn btn-success" />
+			</form:form>
+			
 		</div>
 		
 		
