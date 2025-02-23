@@ -3,8 +3,11 @@ package com.springapp.Todo_app.todo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
+
+import jakarta.validation.Valid;
 
 @Service
 public class TodoService {
@@ -20,7 +23,7 @@ public class TodoService {
 		todos.add(new Todo(++count, "Sagar", "Full Stack Development", LocalDate.now().plusMonths(6), false));
 	}
 
-	public List<Todo> findByUsername(String string) {
+	public List<Todo> findByUsername(String username) {
 		return todos;
 	}
 	
@@ -28,4 +31,29 @@ public class TodoService {
 		Todo todo = new Todo(++count, username, description, date, done);
 		todos.add(todo);
 	}
+	
+	public void deleteById(int id) {
+	    for (int i = 0; i < todos.size(); i++) {
+	        if (todos.get(i).getId() == id) {
+	            todos.remove(i);
+	            break;
+	        }
+	    }
+	}
+
+	public Todo findById(int id) {
+		    for (Todo todo : todos) {
+		        if (todo.getId() == id) {
+		            return todo; 
+		        }
+		    }
+		    return null; 
+
+	}
+
+	public void updateTodo(@Valid Todo todo) {
+		deleteById(todo.getId());
+		todos.add(todo);
+	}
+	
 }
