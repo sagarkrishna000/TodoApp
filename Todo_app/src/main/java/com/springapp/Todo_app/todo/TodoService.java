@@ -24,8 +24,15 @@ public class TodoService {
 	}
 
 	public List<Todo> findByUsername(String username) {
-		return todos;
+	    List<Todo> userTodos = new ArrayList<>();
+	    for (Todo todo : todos) {
+	        if (todo.getUsername().equalsIgnoreCase(username)) { 
+	            userTodos.add(todo);
+	        }
+	    }
+	    return userTodos;  
 	}
+
 	
 	public void addTodo(String username, String description, LocalDate date, boolean done) {
 		Todo todo = new Todo(++count, username, description, date, done);
