@@ -2,12 +2,22 @@ package com.springapp.Todo_app.todo;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Size;
 
+@Entity
 public class Todo {
+	
+	public Todo() {
+		
+	}
 
-	private String username;
+	@Id
+	@GeneratedValue
 	private int id;
+	private String username;
 	private LocalDate date;
 	private boolean done;
 	

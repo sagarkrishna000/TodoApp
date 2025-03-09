@@ -18,19 +18,20 @@ import jakarta.validation.Valid;
 @Controller
 @SessionAttributes("name")
 public class TodoController {
-	
-	private TodoService todoService;
+
+
+	private TodoRepository todoRepository;
 
 	//This constructor-based dependency injection is used to inject the TodoService into the TodoController
-	public TodoController(TodoService todoService) {
+	public TodoController(TodoRepository todoRepository) {
 		super();
-		this.todoService = todoService;
+		this.todoRepository = todoRepository;
 	}
 
 	@RequestMapping("list-todos")
 	public String listAllTodos(ModelMap model) {
-		String username = getLoggedInUssername(model);
-		List<Todo> todos = todoService.findByUsername(username);
+		String username = getLoggedInUsername(model);
+		List<Todo> todos = todoRepository.findByUsername(username);
 		model.addAttribute("todos", todos);
 		
 		return "listTodos";
@@ -38,7 +39,7 @@ public class TodoController {
 	
 	@RequestMapping(value="add-todo", method=RequestMethod.GET)
 	public String newTodo(ModelMap model) {
-		String username = getLoggedInUssername(model);
+		String username = getLoggedInUsername(model);
 		Todo todo = new Todo(0, username, "", LocalDate.now().plusMonths(8), false);
 		model.put("todo", todo);
 		return "todo";
@@ -51,20 +52,21 @@ public class TodoController {
 			return "todo";
 		}
 		
-		String username = getLoggedInUssername(model);
-		todoService.addTodo(username, todo.getDescription(), todo.getDate(), false);
+		String username = getLoggedInUsername(model);
+		todo.setUsername(username);
+		todoRepository.save(todo);
 		return "redirect:list-todos";
 	}
 	
 	@RequestMapping("delete-todo")
 	public String deleteTodo(@RequestParam int id) {
-		todoService.deleteById(id);
+		todoRepository.deleteById(id);
 		return "redirect:list-todos";
 	}
 	
 	@RequestMapping(value="update-todo", method = RequestMethod.GET)
 	public String showUpdateTodo(@RequestParam int id, ModelMap model) {
-		Todo todo = todoService.findById(id);
+		Todo todo = todoRepository.findById(id).get();
 		model.addAttribute("todo",todo);
 		return "todo";
 	}
@@ -74,13 +76,13 @@ public class TodoController {
 		if(result.hasErrors()) {
 			return "todo";
 		}
-		String username = getLoggedInUssername(model);
+		String username = getLoggedInUsername(model);
 		todo.setUsername(username);
-		todoService.updateTodo(todo);
+		todoRepository.save(todo);
 		return "redirect:list-todos";
 	}
 	
-	private String getLoggedInUssername(ModelMap model) {
+	private String getLoggedInUsername(ModelMap model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return authentication.getName();
 	}
